@@ -13,21 +13,8 @@ export const metadata: Metadata = {
     "Более 40 магазинов на ул. Красной Звезды 70. Батутный центр ТутБатут, хобби-маркет Чудо-ручки. Работаем с 10:00 до 20:00. Бесплатная парковка.",
   keywords: ["ТЦ Арена", "Чита", "торговый центр", "магазины", "батутный центр", "Чудо-ручки"],
   icons: {
-    icon: [
-      {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
-    ],
-    apple: "/apple-icon.png",
+    icon: "/favicon.png",
+    apple: "/favicon.png",
   },
 }
 
