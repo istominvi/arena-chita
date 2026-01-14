@@ -1,6 +1,5 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { MapPin, Star } from "lucide-react"
 import type { Tenant, Category } from "@/lib/data"
 
 const categoryLabels: Record<Category, string> = {
@@ -22,7 +21,7 @@ interface TenantCardProps {
 }
 
 export function TenantCard({ tenant }: TenantCardProps) {
-  const { name, category, floor, rating, description, isAnchor, location } = tenant
+  const { name, category, floor, description, isAnchor } = tenant
 
   const getFloorLabel = (floor: number) => {
     if (floor === 0) return "Цокольный этаж"
@@ -40,22 +39,13 @@ export function TenantCard({ tenant }: TenantCardProps) {
           <Badge variant="secondary" className="text-xs font-normal">
             {categoryLabels[category]}
           </Badge>
-          {rating && rating >= 4.5 && (
-            <Badge className="flex items-center gap-1 bg-primary text-primary-foreground">
-              <Star className="h-3 w-3 fill-current" />
-              {rating}
-            </Badge>
-          )}
         </div>
         <h3 className="mb-1 text-lg font-bold text-foreground transition-colors group-hover:text-primary">{name}</h3>
         {isAnchor && <p className="mb-2 text-xs font-medium text-primary">Рекомендуем</p>}
         <p className="line-clamp-2 text-sm text-muted-foreground">{description}</p>
       </CardContent>
       <CardFooter className="px-5 pb-5 pt-0 text-sm text-muted-foreground">
-        <div className="flex items-center gap-1">
-          <MapPin className="h-4 w-4" />
-          <span>{location || getFloorLabel(floor)}</span>
-        </div>
+        <span>{getFloorLabel(floor)}</span>
       </CardFooter>
     </Card>
   )

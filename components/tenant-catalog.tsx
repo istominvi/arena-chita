@@ -6,9 +6,13 @@ import { Search, ChevronDown, ChevronUp } from "lucide-react"
 import { FilterBar } from "@/components/filter-bar"
 import { TenantCard } from "@/components/tenant-card"
 import { Button } from "@/components/ui/button"
-import { tenants, categories, type Category } from "@/lib/data"
+import { categories, type Category, type Tenant } from "@/lib/data"
 
-export function TenantCatalog() {
+interface TenantCatalogProps {
+  tenants: Tenant[]
+}
+
+export function TenantCatalog({ tenants }: TenantCatalogProps) {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState<Category | "all">("all")
   const [selectedFloor, setSelectedFloor] = useState<number | "all">("all")
@@ -28,7 +32,7 @@ export function TenantCatalog() {
 
       return matchesSearch && matchesCategory && matchesFloor
     })
-  }, [searchQuery, selectedCategory, selectedFloor])
+  }, [searchQuery, selectedCategory, selectedFloor, tenants])
 
   const anchorTenants = filteredTenants.filter((t) => t.isAnchor)
   const regularTenants = filteredTenants.filter((t) => !t.isAnchor)
