@@ -41,7 +41,7 @@ export const categories: { value: Category | "all"; label: string; icon: string 
   { value: "Health", label: "Здоровье", icon: "Pill" },
 ]
 
-const SHEET_URL = "REPLACE_WITH_YOUR_GOOGLE_SHEET_CSV_URL"
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR3rIZgWrsGgkZzT_RyUI0mFGdEV-YkYvmfjHp5mwjrEtfRQWU0HshoKeECon3jQ_KPd-6JWEj8QsP6/pub?gid=0&single=true&output=csv"
 
 export async function getTenants(): Promise<Tenant[]> {
   if (SHEET_URL === "REPLACE_WITH_YOUR_GOOGLE_SHEET_CSV_URL") {
