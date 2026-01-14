@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { MapPin, ChevronDown } from "lucide-react"
 
@@ -5,10 +6,13 @@ export function Hero() {
   return (
     <section className="relative overflow-hidden">
       <div className="relative">
-        <img
+        <Image
           src="/images/arena-3.jpeg"
           alt="ТЦ Арена - Торговый центр"
+          width={1200}
+          height={675}
           className="mx-auto h-auto w-full max-w-5xl object-contain"
+          priority
         />
       </div>
 
