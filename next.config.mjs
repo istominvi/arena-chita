@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "export",
+  // Custom domain: arena-chita.ru (served from root)
   typescript: {
     ignoreBuildErrors: true,
   },
