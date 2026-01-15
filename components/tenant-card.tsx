@@ -1,5 +1,6 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Phone } from "lucide-react"
 import type { Tenant, Category } from "@/lib/data"
 
 const categoryLabels: Record<Category, string> = {
@@ -21,7 +22,7 @@ interface TenantCardProps {
 }
 
 export function TenantCard({ tenant }: TenantCardProps) {
-  const { name, category, floor, description, isAnchor } = tenant
+  const { name, category, floor, description, isAnchor, phone } = tenant
 
   const getFloorLabel = (floor: number) => {
     if (floor === 0) return "Цокольный этаж"
@@ -44,8 +45,14 @@ export function TenantCard({ tenant }: TenantCardProps) {
         {isAnchor && <p className="mb-2 text-xs font-medium text-primary">Рекомендуем</p>}
         <p className="line-clamp-2 text-sm text-muted-foreground">{description}</p>
       </CardContent>
-      <CardFooter className="px-5 pb-5 pt-0 text-sm text-muted-foreground">
+      <CardFooter className="flex items-center justify-between px-5 pb-5 pt-0 text-sm text-muted-foreground">
         <span>{getFloorLabel(floor)}</span>
+        {phone && (
+          <div className="flex items-center gap-1.5" title="Телефон">
+            <Phone className="h-3.5 w-3.5" />
+            <span>{phone}</span>
+          </div>
+        )}
       </CardFooter>
     </Card>
   )
