@@ -4,11 +4,11 @@ import { MapPin, ChevronDown } from "lucide-react"
 export function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="relative">
+      <div className="relative w-full">
         <img
           src="/images/arena-3.jpeg"
           alt="ТЦ Арена - Торговый центр"
-          className="mx-auto h-auto w-full max-w-5xl object-contain"
+          className="h-auto w-full object-cover"
         />
       </div>
 
