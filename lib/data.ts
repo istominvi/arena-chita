@@ -25,6 +25,7 @@ export interface Tenant {
   isAnchor: boolean
   phone?: string
   website?: string
+  boutique?: string
 }
 
 export const categories: { value: Category | "all"; label: string; icon: string }[] = [
@@ -91,6 +92,7 @@ export function parseTenants(data: any[]): Tenant[] {
         isAnchor: isAnchor,
         phone: row["Телефон"] || undefined,
         website: row["Сайт"] || undefined,
+        boutique: row["Бутик"] || undefined,
       };
     })
     .filter((tenant) => {
@@ -102,16 +104,17 @@ export function parseTenants(data: any[]): Tenant[] {
 export async function getTenants(): Promise<Tenant[]> {
   try {
     const response = await fetch(SHEET_URL, { next: { revalidate: 60 } })
-    const csvText = await response.text()
+    if (!response.ok) throw new Error("Failed to fetch data")
+    const text = await response.text()
 
-    const { data } = Papa.parse(csvText, {
+    const { data } = Papa.parse(text, {
       header: true,
       skipEmptyLines: true,
     })
 
     return parseTenants(data)
   } catch (error) {
-    console.error("Error fetching tenants:", error)
+    console.error("Error loading tenants:", error)
     return []
   }
 }
