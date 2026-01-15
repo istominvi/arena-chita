@@ -24,6 +24,7 @@ export interface Tenant {
   tags: string[]
   isAnchor: boolean
   phone?: string
+  website?: string
 }
 
 export const categories: { value: Category | "all"; label: string; icon: string }[] = [
@@ -65,7 +66,7 @@ export function parseTenants(data: any[]): Tenant[] {
       const categoryRaw = row["Категория"] || "";
       const category = categoryMap[categoryRaw] || "Services"; // Default to Services
 
-      const isAnchorRaw = row["Ключевой"] || "";
+      const isAnchorRaw = row["Рекомендуем"] || "";
       const isAnchor =
         String(isAnchorRaw).trim().toLowerCase() === "да" ||
         String(isAnchorRaw).trim().toLowerCase() === "yes" ||
@@ -89,6 +90,7 @@ export function parseTenants(data: any[]): Tenant[] {
         tags: row["Теги"] ? row["Теги"].split(",").map((t: string) => t.trim()) : [],
         isAnchor: isAnchor,
         phone: row["Телефон"] || undefined,
+        website: row["Сайт"] || undefined,
       };
     })
     .filter((tenant) => {
@@ -98,23 +100,18 @@ export function parseTenants(data: any[]): Tenant[] {
 }
 
 export async function getTenants(): Promise<Tenant[]> {
-  if (SHEET_URL === "REPLACE_WITH_YOUR_GOOGLE_SHEET_CSV_URL") {
-    console.warn("SHEET_URL is not set. Returning empty tenants list.")
-    return []
-  }
-
   try {
-    const res = await fetch(SHEET_URL, { cache: "no-store" })
-    const csvText = await res.text()
+    const response = await fetch(SHEET_URL, { next: { revalidate: 60 } })
+    const csvText = await response.text()
 
     const { data } = Papa.parse(csvText, {
       header: true,
       skipEmptyLines: true,
     })
 
-    return parseTenants(data);
+    return parseTenants(data)
   } catch (error) {
-    console.error("Failed to fetch tenants:", error)
+    console.error("Error fetching tenants:", error)
     return []
   }
 }
