@@ -1,6 +1,6 @@
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Phone } from "lucide-react"
+import { Globe, Phone } from "lucide-react"
 import type { Tenant, Category } from "@/lib/data"
 
 const categoryLabels: Record<Category, string> = {
@@ -22,7 +22,7 @@ interface TenantCardProps {
 }
 
 export function TenantCard({ tenant }: TenantCardProps) {
-  const { name, category, floor, description, isAnchor, phone } = tenant
+  const { name, category, floor, description, isAnchor, phone, website } = tenant
 
   const getFloorLabel = (floor: number) => {
     if (floor === 0) return "Цокольный этаж"
@@ -47,12 +47,25 @@ export function TenantCard({ tenant }: TenantCardProps) {
       </CardContent>
       <CardFooter className="flex items-center justify-between px-5 pb-5 pt-0 text-sm text-muted-foreground">
         <span>{getFloorLabel(floor)}</span>
-        {phone && (
-          <div className="flex items-center gap-1.5" title="Телефон">
-            <Phone className="h-3.5 w-3.5" />
-            <span>{phone}</span>
-          </div>
-        )}
+        <div className="flex items-center gap-3">
+          {website && (
+            <a
+              href={website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 hover:text-primary"
+              title="Перейти на сайт"
+            >
+              <Globe className="h-3.5 w-3.5" />
+            </a>
+          )}
+          {phone && (
+            <div className="flex items-center gap-1.5" title="Телефон">
+              <Phone className="h-3.5 w-3.5" />
+              <span>{phone}</span>
+            </div>
+          )}
+        </div>
       </CardFooter>
     </Card>
   )
