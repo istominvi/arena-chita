@@ -20,15 +20,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
+          cache: "npm" # or pnpm/yarn depending on lock file
+
       - name: Install dependencies
-        run: npm ci
+        run: npm ci # Using npm ci for clean install
+
       - name: Build
         run: npm run build
+        env:
+           # Ensure Next.js doesn't try to connect to telemetry or other services
+           NEXT_TELEMETRY_DISABLED: 1
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
