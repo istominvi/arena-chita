@@ -41,6 +41,21 @@ export const categories: { value: Category | "all"; label: string; icon: string 
   { value: "Health", label: "Здоровье", icon: "Pill" },
 ]
 
+// Map Russian category names to internal Category type
+const categoryMap: Record<string, Category> = {
+  "Одежда": "Fashion",
+  "Дети": "Kids",
+  "Красота": "Beauty",
+  "Дом": "Home",
+  "Техника": "Tech",
+  "Еда": "Food",
+  "Услуги": "Services",
+  "Развлечения": "Entertainment",
+  "Хобби": "Hobbies",
+  "Питомцы": "Pets",
+  "Здоровье": "Health",
+}
+
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR3rIZgWrsGgkZzT_RyUI0mFGdEV-YkYvmfjHp5mwjrEtfRQWU0HshoKeECon3jQ_KPd-6JWEj8QsP6/pub?gid=0&single=true&output=csv"
 
 export async function getTenants(): Promise<Tenant[]> {
@@ -58,16 +73,30 @@ export async function getTenants(): Promise<Tenant[]> {
       skipEmptyLines: true,
     })
 
-    return data.map((row: any) => ({
-      id: row.id,
-      name: row.name,
-      category: row.category as Category,
-      floor: parseInt(row.floor, 10) as Floor,
-      description: row.description,
-      tags: row.tags ? row.tags.split(",").map((t: string) => t.trim()) : [],
-      isAnchor: row.isAnchor === "TRUE" || row.isAnchor === "true",
-      phone: row.phone || undefined,
-    }))
+    return data.map((row: any, index: number) => {
+      // Map Russian values to internal types
+      const categoryRaw = row["Категория"] || "";
+      const category = categoryMap[categoryRaw] || "Services"; // Default to Services
+
+      const isAnchorRaw = row["Ключевой"] || "";
+      const isAnchor =
+        String(isAnchorRaw).trim().toLowerCase() === "да" ||
+        String(isAnchorRaw).trim().toLowerCase() === "yes" ||
+        String(isAnchorRaw).trim().toLowerCase() === "true";
+
+      const floor = parseInt(row["Этаж"], 10);
+
+      return {
+        id: String(index), // Generate ID from index
+        name: row["Название"] || "",
+        category: category,
+        floor: (isNaN(floor) ? 0 : floor) as Floor,
+        description: row["Описание"] || "",
+        tags: row["Теги"] ? row["Теги"].split(",").map((t: string) => t.trim()) : [],
+        isAnchor: isAnchor,
+        phone: row["Телефон"] || undefined,
+      };
+    })
   } catch (error) {
     console.error("Failed to fetch tenants:", error)
     return []
