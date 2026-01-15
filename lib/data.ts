@@ -58,6 +58,45 @@ const categoryMap: Record<string, Category> = {
 
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR3rIZgWrsGgkZzT_RyUI0mFGdEV-YkYvmfjHp5mwjrEtfRQWU0HshoKeECon3jQ_KPd-6JWEj8QsP6/pub?gid=0&single=true&output=csv"
 
+export function parseTenants(data: any[]): Tenant[] {
+  return data
+    .map((row: any, index: number) => {
+      // Map Russian values to internal types
+      const categoryRaw = row["Категория"] || "";
+      const category = categoryMap[categoryRaw] || "Services"; // Default to Services
+
+      const isAnchorRaw = row["Ключевой"] || "";
+      const isAnchor =
+        String(isAnchorRaw).trim().toLowerCase() === "да" ||
+        String(isAnchorRaw).trim().toLowerCase() === "yes" ||
+        String(isAnchorRaw).trim().toLowerCase() === "true";
+
+      const floorRaw = row["Этаж"];
+      let floor = parseInt(floorRaw, 10);
+
+      // Default to 1 if empty, whitespace, or invalid (NaN)
+      // This prevents empty cells ("") from becoming 0 (Basement)
+      if (!floorRaw || String(floorRaw).trim() === "" || isNaN(floor)) {
+        floor = 1;
+      }
+
+      return {
+        id: String(index), // Generate ID from index (preserves original row index)
+        name: row["Название"] || "",
+        category: category,
+        floor: floor as Floor,
+        description: row["Описание"] || "",
+        tags: row["Теги"] ? row["Теги"].split(",").map((t: string) => t.trim()) : [],
+        isAnchor: isAnchor,
+        phone: row["Телефон"] || undefined,
+      };
+    })
+    .filter((tenant) => {
+      // Filter out tenants with empty or whitespace-only names
+      return tenant.name && tenant.name.trim().length > 0;
+    });
+}
+
 export async function getTenants(): Promise<Tenant[]> {
   if (SHEET_URL === "REPLACE_WITH_YOUR_GOOGLE_SHEET_CSV_URL") {
     console.warn("SHEET_URL is not set. Returning empty tenants list.")
@@ -73,30 +112,7 @@ export async function getTenants(): Promise<Tenant[]> {
       skipEmptyLines: true,
     })
 
-    return data.map((row: any, index: number) => {
-      // Map Russian values to internal types
-      const categoryRaw = row["Категория"] || "";
-      const category = categoryMap[categoryRaw] || "Services"; // Default to Services
-
-      const isAnchorRaw = row["Ключевой"] || "";
-      const isAnchor =
-        String(isAnchorRaw).trim().toLowerCase() === "да" ||
-        String(isAnchorRaw).trim().toLowerCase() === "yes" ||
-        String(isAnchorRaw).trim().toLowerCase() === "true";
-
-      const floor = parseInt(row["Этаж"], 10);
-
-      return {
-        id: String(index), // Generate ID from index
-        name: row["Название"] || "",
-        category: category,
-        floor: (isNaN(floor) ? 0 : floor) as Floor,
-        description: row["Описание"] || "",
-        tags: row["Теги"] ? row["Теги"].split(",").map((t: string) => t.trim()) : [],
-        isAnchor: isAnchor,
-        phone: row["Телефон"] || undefined,
-      };
-    })
+    return parseTenants(data);
   } catch (error) {
     console.error("Failed to fetch tenants:", error)
     return []
