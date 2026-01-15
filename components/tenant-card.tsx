@@ -22,7 +22,7 @@ interface TenantCardProps {
 }
 
 export function TenantCard({ tenant }: TenantCardProps) {
-  const { name, category, floor, description, isAnchor, phone, website } = tenant
+  const { name, category, floor, description, isAnchor, phone, website, boutique } = tenant
 
   const getFloorLabel = (floor: number) => {
     if (floor === 0) return "Цокольный этаж"
@@ -46,7 +46,10 @@ export function TenantCard({ tenant }: TenantCardProps) {
         <p className="line-clamp-2 text-sm text-muted-foreground">{description}</p>
       </CardContent>
       <CardFooter className="flex items-center justify-between px-5 pb-5 pt-0 text-sm text-muted-foreground">
-        <span>{getFloorLabel(floor)}</span>
+        <span>
+          {boutique ? `${boutique} бутик / ` : ""}
+          {getFloorLabel(floor)}
+        </span>
         <div className="flex items-center gap-3">
           {website && (
             <a
