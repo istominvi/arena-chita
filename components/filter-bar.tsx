@@ -6,6 +6,7 @@ import {
   Baby,
   Sparkles,
   Home,
+  Layers,
   Smartphone,
   UtensilsCrossed,
   Wrench,
@@ -71,6 +72,7 @@ export function FilterBar({
           size="sm"
           onClick={() => onFloorChange("all")}
         >
+          <Layers className="mr-2 h-4 w-4" />
           Все этажи
         </Button>
         {[0, 1, 2, 3, 4].map((floor) => (
